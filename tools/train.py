@@ -103,7 +103,11 @@ def main():
     }
 
     gpus = list(config.GPUS)
+    print("gpus:",gpus,type(gpus))
+    DEVICE = torch.device("cuda:%d"%config.GPUS[0] if torch.cuda.is_available() else "cpu")
+    
     model = torch.nn.DataParallel(model, device_ids=gpus).cuda()
+    model = model.to(DEVICE)
 
     # define loss function (criterion) and optimizer
     criterion = torch.nn.CrossEntropyLoss().cuda()
@@ -177,7 +181,7 @@ def main():
     for epoch in range(last_epoch, config.TRAIN.END_EPOCH):
         lr_scheduler.step()
         # train for one epoch
-        train(config, train_loader, model, criterion, optimizer, epoch,
+        train(config, train_loader, model, DEVICE, criterion, optimizer, epoch,
               final_output_dir, tb_log_dir, writer_dict)
         # evaluate on validation set
         perf_indicator = validate(config, valid_loader, model, criterion,
