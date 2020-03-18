@@ -1,3 +1,5 @@
-./data
-./imagenet
+data/
+imagenet
+output
+log
 *__pycache__

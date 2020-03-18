@@ -93,9 +93,10 @@ def validate(config, val_loader, model, criterion, output_dir, tb_log_dir,
         end = time.time()
         for i, (input, target) in enumerate(val_loader):
             # compute output
-            output = model(input)
-
-            target = target.cuda(non_blocking=True)
+            output = model(input.to(device))
+            target = target.to(device)
+            #output = model(input)
+            #target = target.cuda(non_blocking=True)
 
             loss = criterion(output, target)
 
